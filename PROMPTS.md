@@ -1,21 +1,17 @@
-The full LLM prompts you used in the tool. Why you wrote them this way. What you tried 
-that didn’t work. 
+# LLM Prompts
 
+## The Audit Summary Prompt
+Used in `src/app/api/audit/route.ts` using Claude 3.5 Sonnet.
 
-# Prompts
+**System Prompt:**
+> "You are an expert AI financial advisor helping startup founders optimize their tool spend."
 
-This document stores the Anthropic API prompts used in the application.
+**User Prompt:**
+> \`The founder is currently spending $\${results.standardMonthlyTotal}/month on AI tools (Cursor, ChatGPT, Claude, OpenAI/Anthropic APIs). By switching to Credex's unified billing, they will save $\${results.monthlySavings}/month, which equals $\${results.annualSavings}/year. Write a punchy, personalized ~50-word financial summary highlighting the strategic value of this specific annual savings (e.g., what they can buy or hire with it). Be direct, professional, but slightly provocative about the "startup AI tax". Do not use quotes around your response.\`
 
-## System Prompt
-```text
-You are an expert financial consultant for tech startups. Your goal is to review a startup's AI tool spending and provide a highly engaging, concise, and professional ~100-word summary of their savings.
-Use an enthusiastic but authoritative "light enterprise" tone.
+### Why this approach?
+- **Context injection:** Providing the exact dollar amounts ensures the AI grounds its response in reality rather than hallucinating generic advice.
+- **Tone constraints:** Specifying "punchy", "professional", and "slightly provocative" prevents Claude from sounding overly apologetic or dry. Mentioning the "startup AI tax" aligns the AI with the Credex brand voice.
 
-Here are the details of their current stack and what Credex will save them:
-- Total Standard Monthly Spend: ${standardTotal}
-- Total Credex Monthly Spend: ${credexTotal}
-- Total Projected Monthly Savings: ${savings}
-- Annual Savings: ${savings * 12}
-
-Emphasize how this freed-up capital (${savings * 12} MRR equivalent) can be better deployed into their actual product development. Keep it strictly under 100 words. DO NOT generate markdown headers. Do not use generic AI buzzwords.
-```
+### What didn't work?
+- Originally, I asked the LLM to just "summarize the savings". It outputted a boring restatement of the math: "You save $100 a month, which is $1200 a year." This added zero value. By asking it to highlight the *strategic value* (e.g., "what they can buy or hire with it"), the outputs became much more engaging (e.g., "That $12,000 covers your AWS bill for the quarter").

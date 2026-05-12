@@ -1,35 +1,29 @@
-Who is the exact target user — not “startups,” but a specific job title at a specific 
-company stage 
- What they Google or scroll through right before they’d want this tool 
- Where they hang out online (specific subreddits, Slack groups, Discord servers, 
-X lists) 
- How you’d get the first 100 users in 30 days with $0 paid budget — be specific, 
-not “post on Twitter” 
- The unfair distribution channel — what’s the one thing only you (or Credex) could 
-do 
- What week-1 traction looks like if this works (specific numbers) 
-What scores well: specific, weird, real channels. What scores poorly: “we’ll do SEO and 
-content marketing.” 
+# Go-to-Market (GTM) Strategy
 
+## 1. The Exact Target User
+- **Job Title**: Founder, Co-Founder, or CTO.
+- **Company Stage**: Pre-seed to Series A startups (team size 2 to 20). 
+- **Why**: They are large enough to feel the pain of dispersed SaaS billing across 5 different company cards, but small enough to lack dedicated Procurement teams.
 
-# Go-To-Market (GTM) Strategy
+## 2. Pre-Intent Triggers
+- **What they Google**: "How to consolidate SaaS billing", "Cursor vs Copilot for teams", "OpenAI API cost tracking".
+- **What they scroll**: HackerNews ("Show HN"), IndieHackers, X (Tech Twitter).
 
-## Objective
-Drive 5,000 top-of-funnel startup founders to The AI Spend Audit within 30 days and capture 500 qualified leads for Credex.
+## 3. Where They Hang Out
+- **Subreddits**: r/SaaS, r/startups, r/ycombinator
+- **Slack/Discord**: YC Startup School forums, local tech hubs (e.g., "NY Tech" Slack), Indie Hackers Discord.
+- **X Lists**: "AI Founders", "Bootstrappers".
 
-## Distribution Channels
-1. **Twitter/X Value Threads:**
-   - "How your startup is overpaying for Cursor and OpenAI by 20% (and how to fix it in 3 minutes)."
-   - Attach a generated OpenGraph Image from the tool.
-2. **Product Hunt Launch:**
-   - Position as a free, instantly-valuable financial tool for founders. "Stop paying retail for AI."
-3. **Founder Communities:**
-   - Y-Combinator Bookface, IndieHackers, specific Subreddits. (Offer it purely as a value-add calculator, not a direct pitch).
+## 4. Getting the First 100 Users ($0 Budget)
+- **Action**: Manually scrape recent YC and Techstars batch lists. Find the CTOs on X/LinkedIn. 
+- **Message**: "Hey [Name], loved your launch on HN. I noticed you're building an AI wrapper. We built a calculator to see if you're overpaying the 'Startup AI Tax' on OpenAI + Cursor. Takes 60s, no signup required."
+- **Conversion**: Send 400 cold DMs at a 25% click-through rate = 100 audits.
 
-## The Viral Loop
-Every time a founder completes the audit, they get a unique `/results/[id]` URL. By dynamically generating a custom image that says "I just saved $X,000 on my AI Stack," other founders are incentivized to click and check their own savings.
+## 5. The Unfair Distribution Channel
+- **VC/Accelerator Partnerships**: Credex can partner directly with Seed-stage VC firms. VCs are actively looking for ways to extend their portfolio companies' runway. Credex provides a co-branded Audit link to the VC, who blasts it to their entire portfolio via internal newsletters: "Save 20% on AI tools instantly."
 
-## Follow-up Lead Nurture
-1. **Immediate:** "Welcome to Credex" onboarding email triggered when they input their email.
-2. **Day 2:** The "How we negotiated these discounts" trust-building email.
-3. **Day 5:** Sales outreach call-to-action to review their stack architecture.
+## 6. Week-1 Traction Expectations
+- **Traffic**: 850 Unique Visitors (driven by Product Hunt launch + initial 400 cold DMs).
+- **Audits Run**: 340 (40% completion rate).
+- **Leads Captured**: 120 (35% email capture rate).
+- **Viral Shares**: 25 founders sharing their generated "$5,400 saved" OpenGraph card on X.

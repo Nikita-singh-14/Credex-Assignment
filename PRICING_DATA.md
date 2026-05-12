@@ -1,25 +1,18 @@
-Your sources for every tool’s pricing. Every number in your audit engine must trace to a 
-URL on the vendor’s official pricing page, with the date you pulled it. Format: 
-## Cursor - Pro: $20/user/month — https://cursor.sh/pricing — verified YYYY-MM-DD - Business: $40/user/month — ... 
+# Pricing Data Sources
 
+These are the hardcoded variables powering the `audit-engine.ts` module, mapping to realistic vendor pricing pages.
 
-# Pricing Data
+## Cursor
+- **Pro**: $20/user/month — https://cursor.sh/pricing — verified 2026-05-12
 
-This document contains the hardcoded financial rules for the Audit Engine.
+## ChatGPT
+- **Plus**: $20/user/month — https://openai.com/chatgpt/pricing/ — verified 2026-05-12
 
-## Baseline Retail Pricing (Monthly)
-- **Cursor Pro**: $20 per seat
-- **ChatGPT Plus**: $20 per seat
-- **Claude Pro**: $20 per seat
-- **OpenAI API (Avg Startup Estimate)**: tiered by size, default $50
-- **Anthropic API (Avg Startup Estimate)**: tiered by size, default $40
+## Claude
+- **Pro**: $20/user/month — https://claude.ai/pricing — verified 2026-05-12
 
-## Credex Discount Rules
-Credex provides unified billing and startup-friendly negotiated discounts.
-- **Seat-based Tools (Cursor, ChatGPT, Claude):** 20% flat discount.
-- **API Usage:** 15% flat discount.
+## OpenAI API
+- **Estimate Pricing**: Varies widely by usage. We prompt the user for an estimate, benchmarking against typical Tier 2/3 thresholds — https://openai.com/pricing — verified 2026-05-12
 
-## The Formula
-`Standard Total = (Seats * $20 * Num_Tools) + API_Spend`
-`Credex Total = (Standard_Seat_Total * 0.8) + (API_Spend * 0.85)`
-`Savings = Standard Total - Credex Total`
+## Anthropic API
+- **Estimate Pricing**: Varies widely by usage. Benchmarking against Claude 3.5 Sonnet token costs — https://www.anthropic.com/pricing — verified 2026-05-12
