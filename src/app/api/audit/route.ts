@@ -24,20 +24,35 @@ export async function POST(req: NextRequest) {
     let results: any = calculateAudit(input);
     
     // Generate AI Summary
+    const inefficiencies = results.toolBreakdown
+      .filter((t: any) => !t.isOptimized)
+      .map((t: any) => `- ${t.name}: ${t.reason}`)
+      .join("\n");
+      
+    const aiPrompt = `You are analyzing an AI spend audit for a startup founder.
+
+Their current standard monthly spend is $${results.standardMonthlyTotal}.
+By switching to Credex's unified billing and optimizing their stack, they will save $${results.monthlySavings} per month (which is $${results.annualSavings} per year).
+
+Here is the breakdown of their inefficiencies:
+${inefficiencies || "None. Their stack is already highly optimized."}
+
+Write a ~100-word personalized financial summary. 
+- Do NOT just list the numbers back to them. 
+- Highlight the strategic value of this specific annual savings (e.g., what they can buy, who they can hire, or how it extends their runway).
+- Be direct, professional, but slightly provocative about the "startup AI tax" and how optimizing their stack is a high-leverage move.
+- Reference their specific inefficiencies (e.g., if they are paying retail for APIs or over-provisioned on seats) to make it feel highly tailored.
+- Do not use quotes around your response.`;
+
     let aiSummary = "";
     if (process.env.ANTHROPIC_API_KEY) {
       try {
         const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
         const response = await anthropic.messages.create({
           model: "claude-3-5-sonnet-20241022",
-          max_tokens: 150,
+          max_tokens: 250,
           system: "You are an expert AI financial advisor helping startup founders optimize their tool spend.",
-          messages: [
-            {
-              role: "user",
-              content: `The founder is currently spending $${results.standardMonthlyTotal}/month on AI tools (Cursor, ChatGPT, Claude, OpenAI/Anthropic APIs). By switching to Credex's unified billing, they will save $${results.monthlySavings}/month, which equals $${results.annualSavings}/year. Write a punchy, personalized ~50-word financial summary highlighting the strategic value of this specific annual savings (e.g., what they can buy or hire with it). Be direct, professional, but slightly provocative about the "startup AI tax". Do not use quotes around your response.`
-            }
-          ]
+          messages: [{ role: "user", content: aiPrompt }]
         });
         
         if (response.content && response.content[0] && response.content[0].type === 'text') {
@@ -45,6 +60,15 @@ export async function POST(req: NextRequest) {
         }
       } catch (err) {
         console.error("Anthropic API error:", err);
+      }
+    }
+    
+    // Graceful Fallback for API failure or missing key
+    if (!aiSummary) {
+      if (results.monthlySavings < 100) {
+        aiSummary = `Your AI stack is remarkably efficient, but the ecosystem moves fast. Stay sharp and let us monitor the market for new enterprise discounts and purpose-built alternatives so your runway stays protected.`;
+      } else {
+        aiSummary = `You are paying a massive "startup AI tax". By failing to consolidate your billing and optimize your seat counts, you are burning $${results.annualSavings} annually. That's capital that should be extending your runway or funding growth, not subsidizing SaaS vendors. Stop leaking cash and shift to unified billing.`;
       }
     }
     

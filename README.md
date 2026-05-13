@@ -1,6 +1,9 @@
 # Credex AI Spend Audit
 
 The **AI Spend Audit** is a high-polish, Next.js lead-generation application built for Credex. It helps startup founders calculate exactly how much they are overpaying for AI developer seats (Cursor, Copilot) and API usage (OpenAI, Anthropic), and offers them a 15-20% discount through Credex's unified billing platform.
+![alt text](image-1.png)
+
+![alt text](image.png)
 
 ## Quick Start
 1. Install dependencies: `npm install`
