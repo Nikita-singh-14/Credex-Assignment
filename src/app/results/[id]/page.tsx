@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
 type Props = {
@@ -23,13 +24,13 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   return {
     title: `AI Spend Audit Result`,
     openGraph: {
-      title: "I just slashed my startup's AI spend by 20% with Credex.",
-      description: "See how much you can save on Cursor, OpenAI, and Claude.",
+      title: "I just slashed my startup's AI spend with Credex.",
+      description: "See how much you can save on your AI stack.",
       images: [{ url: ogUrl.toString() }],
     },
     twitter: {
       card: "summary_large_image",
-      title: "I just slashed my startup's AI spend by 20% with Credex.",
+      title: "I just slashed my startup's AI spend with Credex.",
       images: [{ url: ogUrl.toString() }],
     }
   }
@@ -42,12 +43,7 @@ export default async function ResultsPage({ params, searchParams }: Props) {
   let auditData = null;
   
   if (data) {
-    // Decoding generic mocked data param
     auditData = JSON.parse(Buffer.from(data, 'base64').toString());
-  } else {
-    // In production with DB, we'd fetch via UUID from Supabase:
-    // const { data } = await supabase.from('audits').select().eq('id', id).single()
-    // auditData = data;
   }
   
   if (!auditData) {
@@ -59,78 +55,135 @@ export default async function ResultsPage({ params, searchParams }: Props) {
   }
   
   const { input, results } = auditData;
+  const isOptimal = results.monthlySavings < 100;
   
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans selection:bg-blue-100">
-      <main className="max-w-3xl w-full py-12">
-      
-         {/* Navigation */}
-         <Link href="/" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 mb-8 transition-colors">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-            Start New Audit
-         </Link>
+    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-sans relative overflow-hidden selection:bg-emerald-500/30">
+      {/* Background Gradients */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />
+      <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[150px] pointer-events-none mix-blend-screen" />
 
-         <Card className="shadow-2xl shadow-blue-900/5 border-slate-200">
-           <CardHeader className="text-center bg-emerald-50/50 border-b border-emerald-100/50 rounded-t-xl py-12">
-             <div className="mx-auto w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-6 shadow-sm">
-               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-             </div>
-             <CardTitle className="text-4xl text-emerald-950 mb-3 tracking-tight">Audit Complete</CardTitle>
-             <CardDescription className="text-lg text-emerald-700 font-medium">Here is your tailored AI Spend Analysis</CardDescription>
-           </CardHeader>
-           <CardContent className="p-8 sm:p-12 space-y-10">
-             
-             {/* The Metric Flex Layout */}
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-               <div className="p-8 bg-slate-50 rounded-2xl border border-slate-200 text-center">
-                  <p className="text-slate-500 font-semibold mb-3 tracking-wide text-sm uppercase">Standard Monthly Spend</p>
-                  <p className="text-5xl font-bold text-slate-800">${results.standardMonthlyTotal}</p>
+      <main className="max-w-4xl w-full py-12 relative z-10">
+        <Link href="/" className="inline-flex items-center text-sm font-medium text-slate-400 hover:text-white mb-8 transition-colors group">
+          <svg className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          Start New Audit
+        </Link>
+
+        {/* Dynamic Hero Section */}
+        <div className="text-center mb-12 animate-in slide-in-from-bottom-8 duration-700 fade-in">
+          {isOptimal ? (
+             <div className="space-y-4">
+               <div className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-semibold mb-2">
+                 Stack Optimized
                </div>
-               <div className="p-8 bg-blue-50 border border-blue-200 rounded-2xl text-center shadow-inner relative overflow-hidden">
-                  <div className="absolute top-0 inset-x-0 h-1.5 bg-blue-500"></div>
-                  <p className="text-blue-600 font-semibold mb-3 tracking-wide text-sm uppercase">Credex Monthly Spend</p>
-                  <p className="text-5xl font-extrabold text-blue-950">${results.credexMonthlyTotal}</p>
+               <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight">You're spending well.</h1>
+               <p className="text-xl text-slate-400 max-w-2xl mx-auto">Your stack is highly optimized. We couldn't find major inefficiencies, which is rare. Great job!</p>
+               <div className="mt-8 flex justify-center gap-6 text-center">
+                 <div>
+                   <p className="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-1">Standard Spend</p>
+                   <p className="text-3xl font-light text-slate-300">${results.standardMonthlyTotal}<span className="text-lg text-slate-500">/mo</span></p>
+                 </div>
+                 <div className="w-px bg-slate-800"></div>
+                 <div>
+                   <p className="text-emerald-500 text-sm font-semibold uppercase tracking-wider mb-1">Minor Savings</p>
+                   <p className="text-3xl font-light text-emerald-400">${results.monthlySavings}<span className="text-lg text-emerald-500/50">/mo</span></p>
+                 </div>
                </div>
              </div>
-             
-             {/* Savings Summary */}
-             <div className="text-center py-4">
-                <p className="text-2xl text-slate-700 font-medium">You are currently overpaying by <span className="font-bold text-slate-900">${results.monthlySavings}/month</span>.</p>
-                <div className="mt-4 inline-block px-6 py-3 bg-emerald-50 rounded-full border border-emerald-100">
-                  <p className="text-xl font-medium text-emerald-800">That's <span className="font-extrabold text-emerald-600">${results.annualSavings} in annual savings</span>.</p>
+          ) : (
+             <div className="space-y-6">
+               <div className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm font-semibold mb-2 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                 Inefficiencies Detected
+               </div>
+               <h1 className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200 tracking-tight leading-tight">
+                 ${results.annualSavings.toLocaleString()} <span className="text-3xl md:text-4xl text-slate-300 font-medium tracking-normal">/ year</span>
+               </h1>
+               <p className="text-2xl text-slate-300 max-w-2xl mx-auto font-light">
+                 You are leaving <strong className="text-white">${results.monthlySavings.toLocaleString()}/mo</strong> on the table.
+               </p>
+             </div>
+          )}
+        </div>
+
+        {/* Per-Tool Breakdown UI */}
+        <div className="bg-slate-800/40 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-6 md:p-10 mb-8 shadow-2xl animate-in slide-in-from-bottom-12 duration-1000 fade-in delay-150">
+          <h2 className="text-2xl font-semibold text-white mb-6 flex items-center">
+            <svg className="w-5 h-5 mr-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            Stack Breakdown
+          </h2>
+          
+          <div className="space-y-4">
+            {results.toolBreakdown?.map((tool: any, idx: number) => (
+              <div key={idx} className={`relative overflow-hidden rounded-2xl p-5 border ${tool.isOptimized ? 'bg-slate-800/30 border-slate-700/50' : 'bg-gradient-to-r from-amber-500/5 to-transparent border-amber-500/20'}`}>
+                {/* Visual Indicator Line */}
+                {!tool.isOptimized && <div className="absolute left-0 top-0 bottom-0 w-1 bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]"></div>}
+                {tool.isOptimized && <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500/50"></div>}
+
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 ml-2">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-1">
+                      <h3 className="text-lg font-semibold text-slate-200">{tool.name}</h3>
+                      <span className="text-sm font-medium text-slate-500">${tool.currentSpend}/mo</span>
+                    </div>
+                    <p className={`text-sm ${tool.isOptimized ? 'text-slate-400' : 'text-amber-200/80 font-medium'}`}>{tool.recommendedAction}</p>
+                    <p className="text-sm text-slate-500 mt-2 leading-relaxed">{tool.reason}</p>
+                  </div>
+                  
+                  <div className="md:text-right shrink-0">
+                    {tool.savings > 0 ? (
+                      <div className="inline-flex flex-col items-end">
+                        <span className="text-xs font-semibold text-amber-500 uppercase tracking-wider mb-1">Potential Savings</span>
+                        <span className="text-2xl font-bold text-amber-400">+${Math.round(tool.savings)}<span className="text-sm text-amber-500/50">/mo</span></span>
+                      </div>
+                    ) : (
+                      <div className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold border border-emerald-500/20">
+                        <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                        Optimized
+                      </div>
+                    )}
+                  </div>
                 </div>
-             </div>
-             
-             {/* AI Summary Placeholder (To be replaced in Day 3) */}
-             <div className="p-8 bg-slate-900 shadow-xl shadow-slate-900/10 text-slate-100 rounded-2xl text-lg italic leading-relaxed border-l-4 border-l-emerald-400 relative overflow-hidden">
-               <div className="absolute right-[-10%] top-[-20%] text-slate-800 opacity-20">
-                 <svg className="w-64 h-64" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
-               </div>
-               <div className="relative z-10">
-                 {results.aiSummary ? (
-                   <>"{results.aiSummary}"</>
-                 ) : (
-                   <>"By shifting your team's tools to Credex's unified billing, you instantly reclaim <span className="text-emerald-400 font-bold">${results.annualSavings}</span> in runway. In today's market, that capital is equivalent to covering standard marketing expenses or hiring a contractor. Stop paying the startup AI tax."</>
-                 )} 
-                 <br/><span className="text-sm text-slate-400 mt-6 flex items-center font-sans not-italic font-semibold tracking-wide uppercase"><svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg> AI Financial Analysis</span>
-               </div>
-             </div>
-             
-             {/* Call to Actions */}
-             <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-slate-100">
-               <Button size="lg" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg py-6 shadow-sm">
-                 Claim Discount with Credex
-               </Button>
-               <Button size="lg" variant="outline" className="flex-1 bg-white text-slate-800 text-lg py-6 font-semibold shadow-sm hover:bg-slate-50 border-slate-200">
-                 <svg className="w-5 h-5 mr-3 text-[#1DA1F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
-                 Share My Audit on X
-               </Button>
-             </div>
-           </CardContent>
-         </Card>
-         <footer className="mt-8 text-center text-slate-400 text-sm font-medium">
-          Powered by Credex
-         </footer>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Dynamic CTA Section */}
+        <div className="animate-in slide-in-from-bottom-16 duration-1000 fade-in delay-300">
+          {isOptimal ? (
+            <Card className="bg-slate-800/50 backdrop-blur-md border-slate-700 shadow-xl">
+              <CardHeader className="text-center pb-4">
+                <CardTitle className="text-2xl text-white">Stay Ahead of Pricing Changes</CardTitle>
+                <CardDescription className="text-slate-400 text-base">We'll notify you when new AI tools or pricing changes create optimization opportunities for your specific stack.</CardDescription>
+              </CardHeader>
+              <CardContent className="max-w-md mx-auto w-full">
+                <form className="flex gap-2" action="#">
+                  <Input type="email" placeholder="founder@startup.com" className="bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500" required />
+                  <Button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/20">Notify Me</Button>
+                </form>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="bg-gradient-to-br from-emerald-900/40 to-teal-900/40 backdrop-blur-xl border border-emerald-500/30 shadow-2xl shadow-emerald-900/20 relative overflow-hidden">
+              <div className="absolute -right-20 -top-20 w-64 h-64 bg-emerald-500/20 blur-[80px] rounded-full pointer-events-none"></div>
+              <CardContent className="p-8 md:p-12 text-center relative z-10">
+                <h3 className="text-3xl font-bold text-white mb-4">Capture these savings today.</h3>
+                <p className="text-lg text-emerald-100/70 mb-8 max-w-xl mx-auto">
+                  By switching to Credex's unified billing, you automatically get wholesale rates and enforce team minimums without lifting a finger. Stop paying retail.
+                </p>
+                <div className="flex flex-col sm:flex-row justify-center gap-4">
+                  <Button size="lg" className="bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold text-lg px-8 py-6 shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(16,185,129,0.5)]">
+                    Get Unified Billing
+                  </Button>
+                  <Button size="lg" variant="outline" className="bg-transparent border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/10 hover:text-emerald-200 text-lg px-8 py-6 transition-all">
+                    Share Audit on X
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
       </main>
     </div>
   )

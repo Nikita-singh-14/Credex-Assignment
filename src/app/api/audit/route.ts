@@ -11,16 +11,14 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
+    const payloadStr = formData.get("payload") as string;
     
-    // Parse Input
-    const cursor = parseInt(formData.get("cursor") as string || "0");
-    const chatgpt = parseInt(formData.get("chatgpt") as string || "0");
-    const claude = parseInt(formData.get("claude") as string || "0");
-    const openai = parseInt(formData.get("openai") as string || "0");
-    const anthropic = parseInt(formData.get("anthropic") as string || "0");
-    const email = formData.get("email") as string;
-    
-    const input = { cursor, chatgpt, claude, openai, anthropic };
+    if (!payloadStr) {
+      return NextResponse.json({ error: "Missing payload data" }, { status: 400 });
+    }
+
+    const input = JSON.parse(payloadStr);
+    const email = input.email || "";
     
     // Run the engine calculation
     let results: any = calculateAudit(input);
